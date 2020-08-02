@@ -4,32 +4,42 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public Transform player;
-    public float moveSpeed = 5f;
-    private Rigidbody2D rb;
-    private Vector2 movement;
+    public float speed;
+    public float stoppingDistance;
+    public float retreatDistance;
+    public float attackRange;
 
-    // Start is called before the first frame update
-    void Start()
+    public Transform player;
+
+    public void Start()
     {
-        rb = this.GetComponent<Rigidbody2D>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        Vector3 direction = player.position - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        rb.rotation = angle;
-        direction.Normalize();
-        movement = direction;
-    }
-    private void FixedUpdate()
-    {
-        moveCharacter(movement);
-    }
-    void moveCharacter(Vector2 direction)
-    {
-        rb.MovePosition((Vector2)transform.position + (direction * moveSpeed * Time.deltaTime));
+        if (Vector2.Distance(transform.position, player.position) > stoppingDistance && 
+            Vector2.Distance(transform.position, player.position) < attackRange)
+        {
+            Debug.Log("I come");
+            transform.position = Vector2.MoveTowards(transform.position, player.position, 
+                speed * Time.deltaTime);
+        }
+
+        else if (Vector2.Distance(transform.position, player.position) < stoppingDistance
+            && Vector2.Distance(transform.position, player.position) > retreatDistance &&
+            Vector2.Distance(transform.position, player.position) > attackRange)
+        {
+            Debug.Log("I stay");
+            Debug.Log(player.position);
+            transform.position = this.transform.position;
+        }
+
+        else if (Vector2.Distance(transform.position, player.position) < retreatDistance)
+        {
+            Debug.Log("I run");
+            transform.position = Vector2.MoveTowards(transform.position, player.position, 
+                -speed * Time.deltaTime);
+        }
     }
 }
