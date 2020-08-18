@@ -46,6 +46,10 @@ public class CharacterSelection : MonoBehaviour
         UpdateCharacterSelectionUI();
     }
 
+    public void ConfirmButton()
+    {
+
+    }
 
 
     private void UpdateCharacterSelectionUI()
